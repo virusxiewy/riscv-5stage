@@ -3,4 +3,4 @@ module ex_stage (
     input wire rst_ni;
 );
     
-endmodule
+endmodule                          
