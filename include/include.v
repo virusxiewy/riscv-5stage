@@ -1,0 +1,1 @@
+`define INSTR_WIDTH 32
