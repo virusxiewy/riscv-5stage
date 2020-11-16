@@ -5,8 +5,8 @@
 */
 
 module im (
-    input wire clk_i;
-    input wire [31:0] addr;
+    input wire clk_i,
+    input wire [31:0] addr,
     output wire [31:0] data;
 )
     parameter NMEN = 128;   //number of memory entries,

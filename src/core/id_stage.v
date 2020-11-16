@@ -1,5 +1,5 @@
 module id_stage (
-    input wire clk_i;
+    input wire clk_i,
     input wire rst_ni;
 );
     
