@@ -7,8 +7,8 @@
 module im (
     input wire clk_i,
     input wire [31:0] addr,
-    output wire [31:0] data;
-)
+    output wire [31:0] data;)
+    
     parameter NMEN = 128;   //number of memory entries,
                             //not the same as the memory size 
     parameter IM_DATA = "im_data.txt";  //file to read data from

@@ -7,5 +7,7 @@ module if_stage (
 
     input wire [`Hold_Flag_Bus]hold_flag_i;
 );
-    
+    im im1 (.clk(clk_i),
+            .addr(instr_addr,
+            .data(fetch_instr)));
 endmodule
