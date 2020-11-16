@@ -8,8 +8,6 @@ module pc_reg (
     input wire [31:0] jump_addr_i,
     input wire [`Hold_Flag_Bus]hold_flag_i,
     output wire[31:0] addr
-
-
 );
     reg [31:0]pc;
     
