@@ -7,7 +7,7 @@ module pc_reg (
     input wire jump_flag,
     input wire [31:0] jump_addr_i,
     input wire [`Hold_Flag_Bus]hold_flag_i,
-    output wire[31:0] addr;
+    output wire[31:0] addr
 
 
 );

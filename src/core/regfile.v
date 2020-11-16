@@ -16,13 +16,13 @@ module regfile (
     input wire [31:0] raddr_1,
     input wire [31:0] raddr_2,
     output wire [31:0] rdata_1,
-    output wire [31:0] rdata_2;
+    output wire [31:0] rdata_2
 );
     reg [31:0] mem [32:0];
 
     assign mem[0] = 32'b0;
 
-    always @(posedge clk ) begin
+    always @(posedge clk_i) begin
         if (!rst_ni) begin
             if(we_i) begin
                 if(waddr_i != `ZeroReg) begin
@@ -34,7 +34,7 @@ module regfile (
         end 
     end    
     
-    always @(posedge clk ) begin
+    always @(posedge clk_i) begin
         if (raddr_1 == `ZeroReg) begin
             rdata_1 <= 32'b0;
         end else if (raddr_1 == waddr_i && we_i) begin
@@ -44,7 +44,7 @@ module regfile (
         end
     end
 
-        always @(posedge clk ) begin
+        always @(posedge clk_i) begin
         if (raddr_2 == `ZeroReg) begin
             rdata_2 <= 32'b0;
         end else if (raddr_2 == waddr_i && we_i) begin

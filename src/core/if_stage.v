@@ -1,3 +1,12 @@
+/*
+*Copyright 2020 wy, virusxiewy99@live.cn
+*
+*if_stage.v - the first stage of 5
+*include a module that generate the PC and a module fetch intruction from memory 
+* 
+*/
+
+
 module if_stage (
     input wire clk_i,
     input wire rst_ni,
@@ -8,7 +17,7 @@ module if_stage (
     input wire [`Hold_Flag_Bus]hold_flag_i,
 
     output wire [31:0] fetch_pc,
-    output wire [31:0] fetch_instr;
+    output wire [31:0] fetch_instr
 );
     wire [31:0] pc;
     pc_reg pc_reg_i(.clk_i(clk_i),
