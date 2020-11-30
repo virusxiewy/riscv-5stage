@@ -16,7 +16,7 @@ module decoder (
     output wire [4:0] rs2_addr,
     output wire [4:0] rd,
     output wire [31:0] imm,
-    output wire rd_wen,    
+    output wire rd_wen    
 );
     wire [6:0] opcode = instr[6:0];
     wire [2:0] rv32_func3 = instr[14:12];
