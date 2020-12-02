@@ -44,7 +44,7 @@ module regfile (
         end
     end
 
-        always @(posedge clk_i) begin
+    always @(posedge clk_i) begin
         if (raddr_2 == `ZeroReg) begin
             rdata_2 <= 32'b0;
         end else if (raddr_2 == waddr_i && we_i) begin
