@@ -8,8 +8,9 @@
 
 module im (
     input wire clk_i,
-    input wire [31:0] addr,
-    output wire [31:0] data);
+    input wire [31:0] addr_i,
+    output wire [31:0] data_o
+);
     
     parameter NMEN = 128;   //number of memory entries,
                             //not the same as the memory size 
@@ -20,6 +21,6 @@ module im (
     initial begin
         $readmemh(IM_DATA, mem, 0, NMEM-1);
     end
-    assign data = memory[addr[6:0]][31:0];
+    assign data_o = memory[addr_i[6:0]][31:0];
 
 endmodule

@@ -16,8 +16,8 @@ module if_stage (
     input wire [31:0] jump_addr_i,
     input wire [`Hold_Flag_Bus]hold_flag_i,
 
-    output wire [31:0] fetch_pc,
-    output wire [31:0] fetch_instr
+    output wire [31:0] fetch_pc_o,
+    output wire [31:0] fetch_instr_o
 );
     wire [31:0] pc;
     pc_reg pc_reg_i(.clk_i(clk_i),
@@ -27,12 +27,12 @@ module if_stage (
                     .jump_flag(jump_flag),
                     .jump_addr_i(jump_addr_i),
                     .hold_flag_i(hold_flag_i),
-                    .addr(pc));
+                    .addr_o(pc));
 
     im im_i (.clk_i(clk_i),
-            .addr(pc),
-            .data(fetch_instr));
+            .addr_i(pc),
+            .data_o(fetch_instr_o));
 
-    assign fetch_pc = pc;
+    assign fetch_pc_o = pc;
 
 endmodule
