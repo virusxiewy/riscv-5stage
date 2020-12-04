@@ -6,8 +6,8 @@
 */
 
 module csr_regfile (
-    input wire clk_;
-    input wire rst_ni;
+    input wire clk_i;
+    input wire rst_ni
 );
     
 endmodule

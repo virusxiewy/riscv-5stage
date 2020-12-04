@@ -28,7 +28,7 @@ module riscv_core (
                         .jump_addr_i(jump_addr),
                         .hold_flag_i(hold_flag),
                         
-                        .fetch_pc_o(pc),
+                        .fetch_pc_o(),
                         .fetch_instr_o(instr));
 
     id_stage id_stage_i(.clk_i(clk_i),
