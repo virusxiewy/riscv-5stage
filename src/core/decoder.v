@@ -17,6 +17,7 @@ module decoder (
     output wire [4:0] rs1_addr_o,
     output wire [4:0] rs2_addr_o,
     output wire [4:0] rd_addr_o,
+    output wire imm_en_o,
     output wire [31:0] imm_o,
     output wire rd_wen_o    
 );
@@ -31,6 +32,7 @@ module decoder (
         is_illegal_instr_o = 1'b1;
         rs1en_o = 1'b0;
         rs2en_o = 1'b0;
+        imm_en_o = 1'b0;
         rs1_addr_o = `ZeroReg;
         rs2_addr_o = `ZeroReg;
         rd_addr_o = `ZeroReg;
@@ -39,59 +41,79 @@ module decoder (
 
         case (opcode)
             `INST_TYPE_I: begin
-                case (rv32_funct3)
+                case (rv32_func3)
                     `INST_ADDI, `INST_SLTI, `INST_SLTIU, `INST_XORI, `INST_ORI, `INST_ANDI, `INST_SLLI, `INST_SRI: begin
-                        rd_wen_o = `WriteEnable;
+                        if(rd != `ZeroReg) begin
+                            is_illegal_instr_o = 1'b0;
+                            rd_wen_o = `WriteEnable;
+                            rd_addr_o = rd;
+                            rs1_en_o = 1'b1;
+                            rs1_addr_o = rs1;
+                            imm_en_o = 1'b1;
+                            imm_o = {{20{inst_i[31]}}, inst_i[31:20]}; 
+                        end
+                    end
+                    default :
+                endcase
+            end
+
+            `INST_TYPE_R: begin
+                if ((rv32_func7 == 7'b0000000) || (rv32_func7 == 7'b0100000)) begin
+                    case (rv32_func3)
+                        `INST_ADD_SUB, `INST_SLL, `INST_SLT, `INST_SLTU, `INST_XOR, `INST_SR, `INST_OR, `INST_ADD : begin
+                            if (rd != `ZeroReg) begin
+                                is_illegal_instr_o = 1'b0;
+                                rd_wen_o = `WriteEnable;
+                                rd_addr_o = rd;
+                                rs1en_o = 1'b1;
+                                rs1_addr_o = rs1;
+                                rs1en_o = 1'b1;
+                                rs2_raddr_o = rs2; 
+                            end
+                        end 
+                        default :
+                    endcase
+                end
+            end
+
+            `TNST_TYPE_L:begin
+                case (rv32_func3)
+                    `INST_LB, `INST_LH, `INST_LW, `INST_LBU, `INST_LHU: begin
+                        if (rd != `ZeroReg) begin
+                            is_illegal_instr_o = 1'b0;
+                            rd_wen_o = `WriteEnable;
+                            rd_addr_o = rd;
+                            rs1en_o = 1'b1;
+                            rs1_addr_o = rs1;
+                            imm_en_o = 1'b1;
+                            op2_o = {{20{inst_i[31]}}, inst_i[31:20]};
+                        end
+                    end
+                    default: 
+                endcase
+            end 
+
+            `INST_TYPE_S: begin
+                case (rv32_func3)
+                    `INST_SB, `INST_SW, `INST_SH: begin
+                        is_illegal_instr_o = 1'b0;
+                        rd_wen_o = `WriteDisable;
+                        rs1en_o = 1'b1;
                         rs1_addr_o = rs1;
-                        rs2_addr_o = `ZeroReg;
-                        imm_o = {{20{inst_i[31]}}, inst_i[31:20]};
+                        rs2en_o = 1'b1;
+                        rs2_raddr_o = rs2;
+                        imm_en_o = 1'b1;
+                        imm_o = {{20{inst_i[31]}}, inst_i[31:25], inst_i[11:7]};
                     end
                     default: begin
-                        rd_wen = `WriteDisable;
-                        rd = `ZeroReg;
-                        rs1_addr = `ZeroReg;
-                        rs2_addr = `ZeroReg;
+                        reg1_raddr_o = `ZeroReg;
+                        reg2_raddr_o = `ZeroReg;
+                        reg_we_o = `WriteDisable;
+                        reg_waddr_o = `ZeroReg;
                     end
                 endcase
             end
 
-            `INST_TYPE_R_M: begin
-                if ((rv32_func7 == 7'b0000000) || (rv32_func7 == 7'b0100000)) begin
-                    case (rv32_func3)
-                        `INST_ADD_SUB, `INST_SLL, `INST_SLT, `INST_SLTU, `INST_XOR, `INST_SR, `INST_OR, `INST_ADD : begin
-                            rd_wen_o = `WriteEnable;
-                            rd_addr_o = rd;
-                            rs1_addr_o = rs1;
-                            rs2_raddr_o = rs2;
-                        end 
-                        default: begin
-                            rd_wen = `WriteDisable;
-                            rd = `ZeroReg;
-                            rs1_addr = `ZeroReg;
-                            rs2_addr = `ZeroReg;
-                        end
-                    endcase
-                end else if (rv32_func7 == 7'b0000001) begin
-                    case (rv32_func3)
-                        `INST_MUL, `INST_MULHU, `INST_MULH, `INST_MULHSU: begin
-                            rd_wen_o = `WriteEnable;
-                            rd_addr_o = rd;
-                            rs1_addr_o = rs1;
-                            rs2_raddr_o = rs2;
-                        end
-                        `INST_DIV, `INST_DIVU, `INST_REM, `INST_REMU: begin
-                            reg_we_o = `WriteDisable;
-                            reg_waddr_o = rd;
-                            reg1_raddr_o = rs1;
-                            reg2_raddr_o = rs2;
-                            op1_o = reg1_rdata_i;
-                            op2_o = reg2_rdata_i;
-                            op1_jump_o = inst_addr_i;
-                            op2_jump_o = 32'h4;
-                        end 
-                    endcase
-                end
-            end 
             default: 
         endcase
     end

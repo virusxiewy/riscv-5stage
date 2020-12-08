@@ -37,7 +37,7 @@
 `define INST_SW     3'b010
 
 // R and M type inst
-`define INST_TYPE_R_M 7'b0110011
+`define INST_TYPE_R 7'b0110011
 // R type inst
 `define INST_ADD_SUB 3'b000
 `define INST_SLL    3'b001
