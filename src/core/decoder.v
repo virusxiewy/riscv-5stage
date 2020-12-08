@@ -5,6 +5,8 @@
 * 
 */
 
+`include "../include/define.v"
+
 module decoder (
     input wire [31:0] inst_i,
     input wire [31:0] addr_i,
@@ -26,8 +28,14 @@ module decoder (
     wire [4:0] rs2 = inst_i[24:20];
     
     always @(*) begin
-        
-
+        is_illegal_instr_o = 1'b1;
+        rs1en_o = 1'b0;
+        rs2en_o = 1'b0;
+        rs1_addr_o = `ZeroReg;
+        rs2_addr_o = `ZeroReg;
+        rd_addr_o = `ZeroReg;
+        imm_o = 32'b0;
+        rd_wen_o = `WriteDisable;
 
         case (opcode)
             `INST_TYPE_I: begin

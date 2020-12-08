@@ -2,6 +2,14 @@
 `define HOLD_PC 3'b001
 `define Hold_Flag_Bus 2:0
 
+`define ZeroWord 32'h0
+`define ZeroReg 5'h0
+`define WriteEnable 1'b1
+`define WriteDisable 1'b0
+`define ReadEnable 1'b1
+`define ReadDisable 1'b0
+`define True 1'b1
+`define False 1'b0
 
 // I type inst
 `define INST_TYPE_I 7'b0010011
