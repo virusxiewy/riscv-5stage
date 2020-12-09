@@ -105,15 +105,57 @@ module decoder (
                         imm_en_o = 1'b1;
                         imm_o = {{20{inst_i[31]}}, inst_i[31:25], inst_i[11:7]};
                     end
-                    default: begin
-                        reg1_raddr_o = `ZeroReg;
-                        reg2_raddr_o = `ZeroReg;
-                        reg_we_o = `WriteDisable;
-                        reg_waddr_o = `ZeroReg;
+                default:     
+                endcase
+            end
+
+            `INST_TYPE_B: begin
+                case (rv32_func3)
+                    `INST_BEQ, `INST_BNE, `INST_BLT, `INST_BGE, `INST_BLTU, `INST_BGEU: begin
+                        is_illegal_instr_o = 1'b0;
+                        rd_wen_o = `WriteDisable;
+                        rs1en_o = 1'b1;
+                        rs1_addr_o = rs1;
+                        rs2en_o = 1'b1;
+                        rs2_raddr_o = rs2;
+                        imm_en_o = 1'b1;
+                        imm_o = {{20{inst_i[31]}}, inst_i[7], inst_i[30:25], inst_i[11:8], 1'b0};
                     end
                 endcase
             end
 
+            `INST_JAL: begin
+                if (rd != `ZeroReg) begin
+                    is_illegal_instr_o = 1'b0;
+                    rd_wen_o = `WriteEnable;
+                    rd_addr_o = rd;
+                    imm_en_o = 1'b1;
+                    imm_o = {{12{inst_i[31]}}, inst_i[19:12], inst_i[20], inst_i[30:21], 1'b0};
+                end
+            end
+
+            `INST_JALR: begin
+                if (rd != `ZeroReg) begin
+                    is_illegal_instr_o = 1'b0;
+                    rd_wen_o = `WriteEnable;
+                    rd_addr_o = rd;
+                    rs1en_o = 1'b1;
+                    rs1_addr_o = rs1;
+                    imm_en_o = 1'b1;
+                    imm_o = {{20{inst_i[31]}}, inst_i[31:20]};
+                end
+                
+            end
+
+            `INST_LUI: begin
+                if (rd != `ZeroReg) begin
+                    is_illegal_instr_o = 1'b0;
+                    rd_wen_o = `WriteEnable;
+                    rd_addr_o = rd;
+                    imm_en_o = 1'b1;
+                    imm_o = {inst_i[31:12], 12'b0};
+                end
+            end
             default: 
         endcase
     end
