@@ -16,10 +16,10 @@ module decoder (
     output wire rs2en_o,
     output wire [4:0] rs1_addr_o,
     output wire [4:0] rs2_addr_o,
+    output wire rd_wen_o,
     output wire [4:0] rd_addr_o,
     output wire imm_en_o,
-    output wire [31:0] imm_o,
-    output wire rd_wen_o    
+    output wire [31:0] imm_o
 );
     wire [6:0] opcode = inst_i[6:0];
     wire [2:0] rv32_func3 = inst_i[14:12];
